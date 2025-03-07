@@ -2,17 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
 import AuthProvider from "@/context/AuthProvider";
-import { Toaster } from "sonner";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { Toaster } from "@/components/ui/sonner";
+import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,15 +16,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
-      <html lang="en">
-        <AuthProvider>
-          <body>
-            {children}
-            <Toaster />
-          </body>
-        </AuthProvider>
-      </html>
-    </>
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      {children}
+    </div>
   );
 }
