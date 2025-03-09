@@ -1,0 +1,51 @@
+=>create nextjs app,create models folder with user.ts,install zod,mongoose.import mongoose with schema and document in file,create interface message that extends document and define content and created at type,then create messageschema set type of interface and define properties for schema,create types of interface for user and create userschema and export it.
+
+=>create schema folder in src then create files for signupschema,verifyschema,signupschema,acceptmessages and message schema.in signinschema import zod and create usernamevalidation with z.string and min max and regex validation,then create signupschema with username,email,password.
+
+=>create verify schema for verification code ex.code must be 6 digits,create signin schema ,acceptmessages schema,message schema as per required.
+
+=>create lib folder in src create dbconnect file import mongoose define types,create connection object,create dbconnec function check if database already connected,then try catch , create .env define mongodb_url , then create connection if not connected already and handle the catch part.
+
+=>go to resend email get api key and save it to env file,npm install resend,create resend.ts in lib folder,import resend connect apikey,create helper folder create sendverificationemail file,import resend,create email folder and create file verificationemail.tsx file,install react-email get the email template,inside helpers file import verificationemail.tsx,create types folder and inside create apiresponse.ts file import message from user model and define interface for types.
+
+=>import apiresponse in helpers file create sendverification function with required fields and apityperesponse,handle catch and in try borrow resend emails send method and provide success return and email fields as required.
+
+=>create api folder in app,create sign-up route and route.ts file,install bcryptjs,import dbconnect,usermodel,bcrypt,sendverificationemail,create post method connect database create try catch in catch handle response appropiately,destructure username,password,email from req.json.find userby username and verified true and return username already exists,then find user by email in else case hash password,setexpiry date create verify code,create newusermodel and save it then send email and handle success and fail cases,and in if case check if user is verified then say user is already verified with this email,then check if user is there with email but not verified then hashpassword and set new verify code and expiry and save it.
+
+*NEXTAUTH*
+
+=>install nextauth inside api create auth folder inside create [...nextauth] inside create files route.ts and options.ts,in options import nextauthoptions,credentialprovider,bcrypt,dbconnect,usermodel.create authoptions method define providers array inside credentialprovider with name,id and credentials then create authorize method with credentials as parameter,connect database find user by username or email,check if user is there and verified also,check password and return user.start pages after provider,then define session strategy and secret.
+
+=>in callbacks assign jwt method and session method,now we have to assgin session and token the user's info for that first we will create next-auth.d.ts file in types for typescript take care,import next-auth and modify its user interface with types for id,username,isverified,isacceptingmessages then modify token and session in callback,in route.ts import next-auth and authoptions and create handler with nextauth options and export it as get and post.
+
+=>in src create middleware file,config path,import gettoken from next-auth-jwt and export default next-auth middleware, define token and current url,then define conditions on where to go when have token and where to go when don't.
+
+=>in app create(auth) create sign-in page,in src create context folder and authprovider file,wrap everything in sessionprovider,wrap layout in authprovider.
+
+=>create checkusernameunique folder in api,import dbconenct.usermodel,zod,usernamevalidation and create object of queryschema for checking usernamevalidation,create get function connect db check for error in catch part,in try first get the url then extract username,now use safeparse on queryschema and pass the queryparam and check if result not success then get the usernameerror by formatting result error and return the response via join because its an array,then extract username from result of safeparse and check in database if username is unique or not.
+
+=>create verify-code in api,import db,usermodel,
+extract username and code use decoded uri component for username and find user based on username, and check the code and its expiry,and change user to verified if the conditions get matched.
+
+=>accept-messages in api,import getserversession,authoptions,dbconnect,usermodel and user from next-auth,create post request,connect db , get session from getserversession by passing auth options,get user from session assign USER type next-auth,check if there is session and user in session,get userid , and accept messages from request json,find user by id and update accept message field,create get request same as this, and return accept message status.
+
+=>create get-messages,import same as accept-messages,convert user id in mongoose id,create aggregation pipeline match user unwind it sort and group it and push the messages in one and provide messages in response. 
+
+=>create send messages , extract username and content find user by username,check if its accepting messages,craft message and push it in user message and save it.
+
+=>install your ai packages,create suggest-messages,create ai apikey ans set your ai integration.
+
+=>initialize shadcn , install form , install lucide react,in signup page.tsx import useform,zodresolver,axios,z,link.create states for username,checking username,issubmitting,username message,install usehooks-ts,import usedebounce value,install toast,set username in usedebouncevalue , import userouter,create form using useform add resolver zod with signup schema add default values and add form types,use useeffect create checkusernameunique method if debouncedusername then axios get req to check-username with query urls,setusernamemessage, and handle error with axios error then call the method.create submit method send the data using form and redirect user to verify-username on success,define ui part of form field with shadcn.solve the bug of using usedebouncevalue in place of usedebouncecallback.
+
+=>create verify folder and [username] folder in it for capturing the params,import userouter,useparams,toast,useform,verifyschema,create onsubmit method,send axios req with username and code to verify code.set the useform in ui part for code input.
+
+=>create sign-in page,handle on submit with next-auth signin for credentials.create u/username page.in app create (app) and dashboard folder and create layout for that in it as well.
+
+=>in component create navbar file,import link usesession signout and user(from next-auth),extract data from session and assign it to user variable.check if session then provide logout button and onclick signout() and if there is no session then login button.create message card in component install shadcn card,follow the docs,install alert dialog,set it in card on alert add deletehandle on click accept message and onmessage delete props on function and define its types,create handledelete method fire a axios req with message id .
+
+=>install switch and seperator from shadcn,create dashboard , import message and usestate,create state for messages,loading,isswitchloading,create handledeletemessage method which filter the message state (for optimistic UI).usesession and useform with zodresolver and destructure register,watch,setvalue.set watch on accept-messages,create fetchacceptmessage method use usecallback and make axios req to accept messagaes and setvalue on ui for accept messages and handle error part.
+create fetchmessages method and get all messages and set it to setmessages.
+
+=>fire useeffect and check if session is there or not and call fetchmessages and fetchacceptmessages . create handleswitch method and axios req to accept messages pass the toggle for accept messages and setvalue in acceptmessages,if session is not there then show him please login using useeffect.import return logs.extract username from session.user get the baseurl using window.location.protocol//window.location.host and create profileurl ${baseurl}/u/${username}.create copytoclipboard method,navigator.clipboard.writetext(profileurl)
+
+=>

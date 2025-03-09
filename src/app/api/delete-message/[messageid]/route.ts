@@ -13,7 +13,7 @@ export async function DELETE(
   const session = await getServerSession(authOptions);
   console.log(session);
 
-  const user: User = session?.user;
+  const user: User = session?.user as User;
 
   if (!session || !session.user) {
     return Response.json(
